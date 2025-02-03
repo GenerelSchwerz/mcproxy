@@ -9,6 +9,8 @@ export class StateData {
   rawTags: any;
   rawRecipes: any[] | null = null;
   rawUnlockRecipes: any | null = null;
+  rawWorldBorder: any | null = null;
+  rawAdvancements: any | null = null;
 
   constructor(bot: Bot) {
     this.bot = bot;
@@ -18,6 +20,8 @@ export class StateData {
     this.bot._client.on('tags', (packet) => this.rawTags = packet)
     this.bot._client.on('unlock_recipes', (packet) => this.rawUnlockRecipes = packet)
     this.bot._client.on('declare_recipes', (packet) => this.rawRecipes = packet)
+    this.bot._client.on('initialize_world_border', (packet) => this.rawWorldBorder = packet)
+    this.bot._client.on('advancements', (packet) => this.rawAdvancements = packet)
   }
 
   onCToSPacket(name: string, data: any, pclient: Client) {

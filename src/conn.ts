@@ -173,7 +173,6 @@ export class Conn {
     if (meta.state !== 'play') return;
     const handle = async () => {
       if (meta.name === 'teleport_confirm' && data?.teleportId === pclient.sendTeleportId) {
-        console.info('Teleport confirm', data.teleportId)
         pclient.sendTeleportId = 0;
         return
       }

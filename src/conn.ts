@@ -127,7 +127,7 @@ export class Conn {
     pclient.writeRaw(buffer);
   }
 
-  onServerPacket(data: any, meta: PacketMeta, buffer: Buffer) {
+  async onServerPacket(data: any, meta: PacketMeta, buffer: Buffer) {
     // Not Async so we skip all the promise handling code
     if (meta.state !== 'play') return;
     switch (meta.name) {
@@ -151,7 +151,7 @@ export class Conn {
         data,
         isCanceled: false,
       };
-      const { isCanceled, currentData } = this.processMiddlewareList(pclient.toClientMiddlewares, packetData);
+      const { isCanceled, currentData } = await this.processMiddlewareList(pclient.toClientMiddlewares, packetData);
       if (isCanceled) continue;
       // This has a huge performance impact. Re serializing packets from objects is way slower then just sending the buffer if the packet has not changed.
       if (meta.name === 'custom_payload' || this.optimizePacketWrite && JSON.stringify(currentData) === packetHash) {
@@ -445,15 +445,15 @@ export class Conn {
     this.pclients.forEach(this.detach.bind(this));
   }
 
-  processMiddlewareList(middlewareList: PacketMiddleware[], currentPacket: PacketData) {
+  async processMiddlewareList(middlewareList: PacketMiddleware[], currentPacket: PacketData) {
     let returnValue: PacketMiddlewareReturnValue;
     let currentData: unknown = currentPacket.data;
     let isCanceled = false;
     for (const middleware of middlewareList) {
       const funcReturn = middleware(currentPacket);
       if (funcReturn instanceof Promise) {
-        // returnValue = await funcReturn;
-        throw new Error('Promises are not supported in middleware');
+        returnValue = await funcReturn;
+        // throw new Error('Promises are not supported in middleware');
       } else {
         returnValue = funcReturn;
       }

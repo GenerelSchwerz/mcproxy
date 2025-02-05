@@ -22,6 +22,7 @@ let conn = new mcproxy.Conn({
 // do stuff with your bot
 conn.stateData.bot.on('spawn', async () => {
   console.log('spawn');
+
 });
 conn.stateData.bot.on('error', (err) => {
   console.error(err);
@@ -30,6 +31,8 @@ conn.stateData.bot.on('end', (reason) => {
   console.error(reason);
   process.exit(1);
 });
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // open a server
 // https://github.com/PrismarineJS/node-minecraft-protocol
@@ -48,9 +51,21 @@ server.on('listening', () => {
 // make sure not to use "connection" instead of "login"
 server.on('login', async (client) => {
   // send packets recreating the current game state to the client
-  client.on('state', (now) => {
+  client.on('state', async (now) => {
     if (now !== 'play') return
     conn.sendPackets(client);
+
+    await sleep(10000);
+
+    conn.link(client);
+
+    await sleep(10000);
+
+
+    conn.unlink()
+
+    await sleep(10000);
+
 
     conn.link(client);
   })

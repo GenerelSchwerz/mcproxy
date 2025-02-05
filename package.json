@@ -1,5 +1,5 @@
 {
-  "name": "@icetank/mcproxy",
+  "name": "@generelschwerz/mcproxy",
   "version": "1.0.8-beta.3",
   "description": "a minecraft proxy library powered by mineflayer",
   "keywords": [
@@ -30,11 +30,11 @@
   },
   "dependencies": {
     "deepcopy": "^2.1.0",
-    "mineflayer": "^4.26.0",
     "smart-buffer": "^4.2.0"
   },
   "devDependencies": {
     "@types/node": "^16.6.2",
+    "mineflayer": "^4.26.0",
     "flying-squid": "^1.11.0",
     "minecraft-data": "^3.41.0",
     "minecraft-protocol": "^1.44.0",

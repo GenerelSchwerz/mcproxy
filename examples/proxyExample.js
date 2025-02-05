@@ -4,7 +4,7 @@ const mcproxy = require('..');
 const minecraft_protocol = require('minecraft-protocol');
 
 const VERSION = '1.21.1';
-const REMOTE_HOST = '2b2t.org';
+const REMOTE_HOST = 'localhost';
 const REMOTE_PORT = 25565;
 const LOCAL_PORT = 25566;
 

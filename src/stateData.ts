@@ -11,6 +11,7 @@ export class StateData {
   rawUnlockRecipes: any | null = null;
   rawWorldBorder: any | null = null;
   rawAdvancements: any | null = null;
+  rawSpawnPoint: any | null = null;
 
   constructor(bot: Bot) {
     this.bot = bot;
@@ -22,7 +23,8 @@ export class StateData {
     this.bot._client.on('declare_recipes', (packet) => this.rawRecipes = packet)
     this.bot._client.on('initialize_world_border', (packet) => this.rawWorldBorder = packet)
     this.bot._client.on('advancements', (packet) => this.rawAdvancements = packet)
-  }
+    this.bot._client.on('spawn_position', (packet) => this.rawSpawnPoint = packet)
+  } 
 
   onCToSPacket(name: string, data: any, pclient: Client) {
     if (pclient.version !== '1.12.2' && pclient.positionPacketsSend === 0 && (name === 'position' || name === 'position_look')) {

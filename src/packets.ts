@@ -226,7 +226,7 @@ export function* generatePackets(
   // if (refData.isNewerOrEqualTo("1.13")) {
   //   yield ["bundle_delimiter", {}];
   // }
-  yield ["spawn_position", { location: { x: 0, z: -64, y: 73 }, angle: 0 }];
+  yield ["spawn_position", stateData.rawSpawnPoint ?? { location: { x: 0, z: -64, y: 73 }, angle: 0 }];
   // if (refData.isNewerOrEqualTo("1.13")) {
   //   yield ["bundle_delimiter", {}];
   // }
@@ -238,7 +238,7 @@ export function* generatePackets(
   // unneeded for spawn
   // NOT VANILLA
   // set gamemode as needed (to match bot?)
-  yield ["game_state_change", { reason: 3, gameMode: bot.player.gamemode }];
+  yield ["game_state_change", { reason: 13, gameMode: 0 }];
 
   // 1.21.1
   yield ["set_ticking_state", { tick_rate: 20, is_frozen: false }];
@@ -267,13 +267,35 @@ export function* generatePackets(
   const metadata = [];
   let idx = 0;
   for (const val of bot.entity.metadata) {
-    idx++
+    idx++;
     if (val !== undefined) metadata.push({ key: idx, type: "float", value: val });
   }
 
   yield ["entity_metadata", { entityId: bot.entity.id, metadata: metadata }];
 
-  yield ["entity_update_attributes", { entityId: bot.entity.id, properties: [] }];
+  yield [
+    "entity_update_attributes",
+    {
+      entityId: bot.entity.id,
+      properties: [
+        {
+          key: "player.block_interaction_range",
+          value: 4.5,
+          modifiers: [],
+        },
+        {
+          key: "generic.step_height",
+          value: 0.10000000149011612,
+          modifiers: [],
+        },
+        {
+          key: "generic.flying_speed",
+          value: 3,
+          modifiers: [],
+        },
+      ],
+    },
+  ];
 
   if (stateData.rawAdvancements) yield ["advancements", stateData.rawAdvancements];
 
@@ -304,7 +326,39 @@ export function* generatePackets(
 
   yield ["chunk_batch_finished", { batchSize: worldChunks.length }];
 
-  console.log('finished sending lol')
+  yield [
+    "entity_update_attributes",
+    {
+      entityId: bot.entity.id,
+
+      properties: [
+        {
+          key: "player.block_interaction_range",
+          value: 4.5,
+          modifiers: [
+            {
+              uuid: "minecraft:creative_mode_block_range",
+              amount: 0.5,
+              operation: 0,
+            },
+          ],
+        },
+        {
+          key: "generic.flying_speed",
+          value: 3,
+          modifiers: [
+            {
+              uuid: "minecraft:creative_mode_entity_range",
+              amount: 2,
+              operation: 0,
+            },
+          ],
+        },
+      ],
+    },
+  ];
+
+  console.log("finished sending lol");
   return;
 }
 
